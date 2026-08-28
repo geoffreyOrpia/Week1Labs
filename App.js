@@ -21,5 +21,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
 
-  heading: { fontSize: 24, fontWeight: "bold", marginBottom: 12 },
+  heading: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 12,
+  },
 });
+
+
+// try replace its contents 
+// import WelcomeScreen from "./screens/WelcomeScreen";
+
+// export default function App() {
+//   return <WelcomeScreen />;
+// }
