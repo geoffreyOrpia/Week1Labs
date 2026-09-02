@@ -75,6 +75,11 @@ export default function AddTaskScreen() {
     setTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   }
 
+  // STEP 4: Add the delete function
+  function handleDeleteTask(id) {
+    setTasks(tasks.filter((t) => t.id !== id));
+  }
+
   return (
     <View style={styles.container}>
       {/* STEP 4: Display the quote on screen */}
@@ -109,6 +114,8 @@ export default function AddTaskScreen() {
       {tasks.length > 0 && tasks.every((t) => t.done) && (
         <Text style={styles.celebration}>🎉 All done! Great work!</Text>
       )}
+
+      {/* STEP 5: Wire onDelete into the FlatList */}
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
@@ -117,6 +124,7 @@ export default function AddTaskScreen() {
             title={item.title}
             done={item.done}
             onToggle={() => handleToggleTask(item.id)}
+            onDelete={() => handleDeleteTask(item.id)}
           />
         )}
         ListEmptyComponent={
