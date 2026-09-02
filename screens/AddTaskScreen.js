@@ -1,4 +1,6 @@
-import { useState } from "react";
+// Open screens/AddTaskScreen.js and add these two imports at the very top:
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +15,40 @@ export default function AddTaskScreen() {
   const [taskText, setTaskText] = useState("");
   const [tasks, setTasks] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // STEP 5.a Fix the bug: Add tracking for initial load
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // 1. Load saved tasks when the app starts
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const savedData = await AsyncStorage.getItem("tasks");
+        if (savedData !== null) {
+          setTasks(JSON.parse(savedData));
+        }
+      } catch (error) {
+        console.error("Failed to load tasks:", error);
+      } finally {
+        setIsLoaded(true); // Mark initial load as complete
+      }
+    };
+    loadTasks();
+  }, []);
+
+  // 2. Save tasks ONLY after initial load is complete
+  useEffect(() => {
+    if (!isLoaded) return; // Prevent saving default/empty state on startup
+
+    const saveTasks = async () => {
+      try {
+        await AsyncStorage.setItem("tasks", JSON.stringify(tasks));
+      } catch (error) {
+        console.error("Failed to save tasks:", error);
+      }
+    };
+    saveTasks();
+  }, [tasks, isLoaded]);
 
   function handleAddTask() {
     if (taskText.trim() === "") {
