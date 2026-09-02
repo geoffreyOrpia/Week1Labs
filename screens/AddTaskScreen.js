@@ -15,9 +15,10 @@ export default function AddTaskScreen() {
   const [taskText, setTaskText] = useState("");
   const [tasks, setTasks] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-
-  // STEP 5.a Fix the bug: Add tracking for initial load
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // State for storing the motivational quote
+  const [quote, setQuote] = useState("");
 
   // 1. Load saved tasks when the app starts
   useEffect(() => {
@@ -50,6 +51,14 @@ export default function AddTaskScreen() {
     saveTasks();
   }, [tasks, isLoaded]);
 
+  // STEP 3: Fetch a quote when the screen loads
+  useEffect(() => {
+    fetch("https://api.quotable.io/random")
+      .then((response) => response.json())
+      .then((data) => setQuote(data.content))
+      .catch(() => setQuote("Believe in yourself and get it done!"));
+  }, []);
+
   function handleAddTask() {
     if (taskText.trim() === "") {
       setErrorMessage("Please type a task before adding it.");
@@ -68,6 +77,19 @@ export default function AddTaskScreen() {
 
   return (
     <View style={styles.container}>
+      {/* STEP 4: Display the quote on screen */}
+      {quote !== "" && <Text style={styles.quote}>💬 {quote}</Text>}
+
+      {/* STEP 5: Refresh button for a new quote */}
+      <Button
+        title="New Quote"
+        onPress={() => {
+          fetch("https://api.quotable.io/random")
+            .then((response) => response.json())
+            .then((data) => setQuote(data.content));
+        }}
+      />
+
       <Text style={styles.heading}>Add a Task</Text>
 
       <TextInput
@@ -146,5 +168,12 @@ const styles = StyleSheet.create({
     color: "#1E8A7A",
     textAlign: "center",
     marginVertical: 12,
+  },
+  // Added matching style for quote
+  quote: {
+    fontStyle: "italic",
+    color: "#6B7280",
+    marginBottom: 16,
+    textAlign: "center",
   },
 });
